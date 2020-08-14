@@ -1,5 +1,5 @@
 export default {
-  base: '/docs/',
+  base: '/little-deer-ui/',
   dest: '/docs',
   typescript: true
 }
