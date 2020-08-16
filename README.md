@@ -1,29 +1,28 @@
-# Typescript Docz example
+# little-deer-ui
 
-## Using `create-docz-app`
-
-```sh
-npx create-docz-app docz-app-typescript --example typescript
-# or
-yarn create docz-app docz-app-typescript --example typescript
-```
-
-## Download manually
+## 基于docz的little-deer-ui
 
 ```sh
-curl https://codeload.github.com/doczjs/docz/tar.gz/master | tar -xz --strip=2 docz-master/examples/typescript
-mv typescript docz-typescript-example
-cd docz-typescript-example
+npm install little-deer-ui
 ```
 
-## Setup
+## 安装
 
 ```sh
-yarn # npm i
+npm install
 ```
 
-## Run
+## 使用
 
 ```sh
 yarn dev # npm run dev
 ```
+
+## 基于gulp打包
+
+```sh
+npm run dist
+```
+
+[线上地址](https://g_guojq.gitee.io/little-deer-ui)
+

@@ -1,19 +1,52 @@
 ---
-name: Test
+name: ListView
 menu: Components
 ---
 
 import { Playground, Props } from 'docz'
-import Test from './Test/index.ts'
+import ListView from './ListView/index.ts'
 
-# Alert
+# ListView
 
 ## Properties
 
-<Props of={Test} />
+<Props of={ListView} />
 
 ## Basic usage
 
 <Playground>
-  <Test test={11} />
+  {
+    () => {
+      let initList = []
+      for (let i = 0; i < 30; i++) {
+        initList.push({
+          id: Math.random() * 100,
+          name: '测试' + Math.random() * 100
+        })
+      }
+      const [list, setList] = React.useState(initList)
+      const onLoad = (currentPage) => {
+        return new Promise((resolve, reject) => {
+//           message.info('当前页：' + currentPage)
+          setList(list.concat(initList))
+          setTimeout(() => {
+            return resolve(true)
+          }, 500)
+        })
+      }
+      return (
+          <ListView
+            onLoad={onLoad}
+          >
+              <div>
+                {
+                  list.map((item, index) => (
+                    <div key={index}>{item.name}</div>
+                  ))
+                }
+              </div>
+          </ListView>
+       )
+    }
+  }
 </Playground>
