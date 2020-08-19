@@ -10,8 +10,5 @@
     "esModuleInterop": true,
     "noEmitHelpers": true,
     "importHelpers": true
-  },
-  "exclude": [
-    "node_modules"
-  ]
+  }
 }

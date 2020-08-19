@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import './style.less'
 export interface PropsType {
-    style: object;
-    className: string;
+    style?: object;
+    className?: string;
     /**
      * 调用onLoad之前的临界值，单位是像素
      * @default 10
