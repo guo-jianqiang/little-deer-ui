@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import CSS from 'csstype'
 import './style.less'
 export interface PropsType {
     style?: object;

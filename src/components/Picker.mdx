@@ -1,0 +1,43 @@
+---
+name: Picker
+menu: Components
+---
+
+import { Playground, Props } from 'docz'
+import Picker from './Picker/index.ts'
+
+# Picker
+
+## Properties
+
+<Props of={Picker} />
+
+## Basic usage
+
+<Playground>
+  {
+    () => {
+      const [visible, setVisible] = React.useState(false)
+      return (
+      <div>
+      <button
+        onClick={() => {
+          setVisible(!visible)
+        }}
+      >
+        打开
+      </button>
+      <Picker
+        visible={visible}
+        onCancel={() => {
+          setVisible(false)
+        }}
+      >
+              {
+                Array.from({length: 10}).map((i, v) => (<div key={v}>{v}</div>))
+              }
+            </Picker>
+      </div>)
+    }
+  }
+</Playground>
