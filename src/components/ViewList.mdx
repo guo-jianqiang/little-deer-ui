@@ -25,23 +25,25 @@ import ListView from './ListView/index.ts'
         })
       }
       const [list, setList] = React.useState(initList)
+      const [isLoaded, setIsLoaded] = React.useState(false)
       const onLoad = (currentPage) => {
         return new Promise((resolve, reject) => {
 //           message.info('当前页：' + currentPage)
-          setList(list.concat(initList))
           setTimeout(() => {
-            return resolve(true)
-          }, 500)
+            setList(list.concat(initList))
+            resolve(true)
+          }, 3000)
         })
       }
       return (
           <ListView
             onLoad={onLoad}
+            isLoaded={isLoaded}
           >
               <div>
                 {
                   list.map((item, index) => (
-                    <div key={index}>{item.name}</div>
+                    <div key={index}>{item.name + ` ${index}`}</div>
                   ))
                 }
               </div>
