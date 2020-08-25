@@ -1,4 +1,4 @@
-import React, {FunctionComponent}  from 'react'
+import React, {FunctionComponent, useEffect}  from 'react'
 import ReactDom from 'react-dom'
 import CSS from 'csstype'
 import './style.less'
@@ -16,7 +16,7 @@ interface PickerProps {
     mask?: boolean,
     /**
      * 开启关闭
-     * @default false
+     * @default 'false'
      */
     visible:boolean,
     /**
@@ -28,6 +28,7 @@ interface PickerProps {
 const top: CSS.Properties = {
     left: 0,
     top: 0,
+    maxHeight: '50%',
     width: '100%',
     animationName: 'slideInTop'
 }
@@ -35,6 +36,7 @@ const top: CSS.Properties = {
 const bottom: CSS.Properties = {
     left: 0,
     bottom: 0,
+    maxHeight: '50%',
     width: '100%',
     animationName: 'slideInUp'
 }
@@ -42,12 +44,14 @@ const bottom: CSS.Properties = {
 const left: CSS.Properties = {
     left: 0,
     bottom: 0,
+    maxWidth: '50%',
     height: '100%',
     animationName: 'slideInLeft'
 }
 const right: CSS.Properties = {
     bottom: 0,
     right: 0,
+    maxWidth: '50%',
     height: '100%',
     animationName: 'slideInRight'
 }
@@ -67,6 +71,14 @@ const Picker:FunctionComponent<PickerProps> = ({placement = 'bottom', mask = tru
             typeof onCancel === 'function' && onCancel()
         }
     }
+
+    useEffect(() => {
+        if (visible) {
+            document.body.style.overflow = 'hidden'
+        } else {
+            document.body.style.overflow = 'auto'
+        }
+    }, [visible])
 
     const Popup = () => {
         return (

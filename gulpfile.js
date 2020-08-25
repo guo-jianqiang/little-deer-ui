@@ -72,7 +72,6 @@ function less2css() {
     .src(styles)
     .pipe(less()) // 处理less文件
     .pipe(autoprefixer()) // 根据browserslistrc增加前缀
-    .pipe(cssnano({ zindex: false, reduceIdents: false })) // 压缩
     .pipe(gulp.dest(dest.dist))
 }
 

@@ -28,14 +28,14 @@ import Picker from './Picker/index.ts'
         打开
       </button>
       <Picker
-        placement='top1'
+        placement='top'
         visible={visible}
         onCancel={() => {
           setVisible(false)
         }}
       >
               {
-                Array.from({length: 10}).map((i, v) => (<div key={v}>{v}</div>))
+                Array.from({length: 100}).map((i, v) => (<div key={v}>{v}</div>))
               }
             </Picker>
       </div>)
