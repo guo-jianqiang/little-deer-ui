@@ -17,16 +17,22 @@
   &-wrap{
     .common();
     &-content{
-      left: 0;
-      bottom: 0;
+      box-sizing: border-box;
       position: fixed;
-      width: 100%;
+      padding: 16px;
       background-color: #fff;
-      padding-bottom: env(safe-area-inset-bottom);
-      animation-name: slideInUp;
-      animation-timing-function: linear;
+      animation-timing-function: ease-in-out;
       animation-duration: 200ms;
     }
+  }
+}
+
+@keyframes slideInTop {
+  0%{
+    transform: translateY(-100%);
+  }
+  100%{
+    transform: translateY(0);
   }
 }
 
@@ -36,5 +42,23 @@
   }
   100%{
     transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  0%{
+    transform: translateX(-100%);
+  }
+  100%{
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  0%{
+    transform: translateX(200%);
+  }
+  100%{
+    transform: translateX(0);
   }
 }
