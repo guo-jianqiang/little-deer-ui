@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect}  from 'react'
+import React, {SFC, useEffect}  from 'react'
 import ReactDom from 'react-dom'
 import CSS from 'csstype'
 import './style.less'
@@ -64,8 +64,8 @@ const pickStyles: object = {
     right
 }
 
-const Picker:FunctionComponent<PickerProps> = ({placement = 'bottom', mask = true, visible = false, onCancel, children}) => {
-    let pickWrapRef
+const Picker:SFC<PickerProps> = ({placement = 'bottom', mask = true, visible = false, onCancel, children}) => {
+    let pickWrapRef: HTMLElement | null
     const handleClick = e => {
         if (!pickWrapRef.contains(e.target)) {
             typeof onCancel === 'function' && onCancel()
