@@ -8,21 +8,21 @@ interface PickerProps {
      * 弹出的位置
      * @default 'bottom'
      */
-    placement?: 'top' | 'right' | 'bottom' | 'left' ,
+    placement?: 'top' | 'right' | 'bottom' | 'left';
     /**
      * 是否显示遮罩
      * @default true
      */
-    mask?: boolean,
+    mask?: boolean;
     /**
      * 开启关闭
      * @default 'false'
      */
-    visible:boolean,
+    visible:boolean;
     /**
      * 关闭回调
      */
-    onCancel: () => void,
+    onCancel: () => void;
 }
 
 const top: CSS.Properties = {
@@ -30,7 +30,7 @@ const top: CSS.Properties = {
     top: 0,
     maxHeight: '50%',
     width: '100%',
-    animationName: 'slideInTop'
+    animationName: 'slideInTop',
 }
 
 const bottom: CSS.Properties = {
@@ -38,7 +38,7 @@ const bottom: CSS.Properties = {
     bottom: 0,
     maxHeight: '50%',
     width: '100%',
-    animationName: 'slideInUp'
+    animationName: 'slideInUp',
 }
 
 const left: CSS.Properties = {
@@ -64,10 +64,18 @@ const pickStyles: object = {
     right
 }
 
-const Picker:SFC<PickerProps> = ({placement = 'bottom', mask = true, visible = false, onCancel, children}) => {
-    let pickWrapRef: HTMLElement | null
-    const handleClick = e => {
-        if (!pickWrapRef.contains(e.target)) {
+const defaultProps: PickerProps = {
+    placement: 'bottom',
+    mask: true,
+    visible: false,
+    onCancel: () => {}
+}
+
+
+const Picker:SFC<PickerProps> = ({placement, mask, visible, onCancel, children}) => {
+    let pickWrapRef: HTMLDivElement | null
+    const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+        if (!pickWrapRef.contains(e.target as any)) {
             typeof onCancel === 'function' && onCancel()
         }
     }
@@ -103,5 +111,7 @@ const Picker:SFC<PickerProps> = ({placement = 'bottom', mask = true, visible = f
 
     return visible && ReactDom.createPortal(Popup(), document.body)
 }
+
+Picker.defaultProps = defaultProps
 
 export default Picker

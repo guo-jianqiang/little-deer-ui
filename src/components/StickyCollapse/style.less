@@ -1,0 +1,32 @@
+.bui-sticky-collapse {
+  position: relative;
+  overflow: auto;
+
+  &-panel {
+    border-radius: 4px 4px 0 0;
+    &:not(:last-child) {
+      margin-bottom: 16px;
+    }
+    > header{
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+      height: 54px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #FAFAFA;
+      padding: 0 16px;
+      z-index: 1;
+      span {
+        font-size: 18px;
+        color: rgba(0,0,0,0.85);
+        line-height: 18px;
+      }
+      .collapse {
+        transform: rotate(-90deg);
+        transition:transform 1s linear;
+      }
+    }
+  }
+}
