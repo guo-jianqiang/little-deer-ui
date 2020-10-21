@@ -62,6 +62,12 @@ module.exports = function override(config, env) {
 +   },'little-deer-ui'),
 + );
 ```
+引入使用
+```jsx
+import {Button} from 'little-deer-ui'
+
+const App = () => (<Button>>按钮</Button>)
+```
 
 [线上地址](https://g_guojq.gitee.io/little-deer-ui)
 
