@@ -1,5 +1,8 @@
 import React, {FC,useRef, useState} from "react";
 import './style.less'
+
+const distance = 6
+
 export interface TooltipProps {
     /**
      * 标题
@@ -18,9 +21,9 @@ export interface TooltipProps {
 
 const top = (visible: boolean) => {
     const top = {
-        top: visible ? 'calc(-100% - 4px)' : 'calc(-100% - 12px)',
+        top: visible ? -distance + 'px' : '-12px',
         left: '50%',
-        transform: 'translate(-50%, -50%)',
+        transform: 'translate(-50%, -100%)',
         '--tooltip-after-top': '100%',
         '--tooltip-after-left': '50%',
         '--tooltip-after-transform': 'translateX(-50%)',
@@ -30,20 +33,20 @@ const top = (visible: boolean) => {
 }
 
 const right = (visible: boolean) => {
-    const top = {
+    const right = {
         top: '50%',
-        right: visible ? '-4px' : '-12px',
+        right: visible ? -distance + 'px' : '-12px',
         transform: 'translate(100%, -50%)',
         '--tooltip-after-top': '50%',
         '--tooltip-after-left': '-8px',
         '--tooltip-after-transform': 'translateY(-50%)',
         '--tooltip-after-border-color': 'transparent rgba(0,0,0,.45) transparent transparent'
     }
-    return top
+    return right
 }
 const bottom = (visible: boolean) => {
     const bottom = {
-        top: visible ? 'calc(100% + 4px)' : 'calc(100% + 12px)',
+        top: visible ? `calc(100% + ${distance}px)` : 'calc(100% + 12px)',
         left: '50%',
         transform: 'translate(-50%)',
         '--tooltip-after-top': '-8px',
@@ -56,7 +59,7 @@ const bottom = (visible: boolean) => {
 const left = (visible: boolean) => {
     const left = {
         top: '50%',
-        left: visible ? '-4px' : '-12px',
+        left: visible ? -distance + 'px' : '-12px',
         transform: 'translate(-100%, -50%)',
         '--tooltip-after-top': '50%',
         '--tooltip-after-left': '100%',
@@ -90,7 +93,7 @@ const ToolTip: FC<TooltipProps> = ({title,placement, mouseLeaveDelay, children})
         }
         <span
             className={'tooltip-title' + `${visible ? ' tooltip-show' : ''}`}
-            style={(typeof tooltipTitleStyle[placement] === 'function' && tooltipTitleStyle[placement](visible)) || tooltipTitleStyle['bottom'](visible)}
+            style={(typeof tooltipTitleStyle[placement] === 'function' && tooltipTitleStyle[placement](visible)) || tooltipTitleStyle['top'](visible)}
         >
       {title}
     </span>
@@ -98,7 +101,7 @@ const ToolTip: FC<TooltipProps> = ({title,placement, mouseLeaveDelay, children})
 }
 
 ToolTip.defaultProps = {
-    placement: 'right',
+    placement: 'top',
     mouseLeaveDelay: 100
 }
 
