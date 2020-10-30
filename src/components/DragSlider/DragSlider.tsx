@@ -55,6 +55,7 @@ const DragSlider: React.SFC<DragSliderProps> = ({title, children}) => {
     }
 
     const onTouchEnd = (e: TouchEvent) => {
+        e.preventDefault()
         document.body.style.overflow = 'auto'
         dragSliderRef.current.style.transition = 'top 300ms cubic-bezier(0.25, 1, 0.5, 1)'
         const prevTop = getTop()
@@ -84,7 +85,12 @@ const DragSlider: React.SFC<DragSliderProps> = ({title, children}) => {
         topRef.current = currentTop
         dragSliderRef.current.removeEventListener('touchmove', onTouchMove)
     }
+    const onScroll = (e: UIEvent) => {
+        // e.stopPropagation()
+        console.log(12)
+    }
     React.useEffect(() => {
+        console.log(dragSliderRef.current.clientHeight)
         const top = window.innerHeight - 64
         setStateTop(top)
         initTop.current = top
