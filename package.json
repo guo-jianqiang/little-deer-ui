@@ -1,6 +1,6 @@
 {
   "name": "little-deer-ui",
-  "version": "1.2.4",
+  "version": "1.3.1",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -11,7 +11,7 @@
     "dev": "docz dev",
     "build": "docz build",
     "dist": "gulp",
-    "push": "gulp && npm publish"
+    "push": "npm publish"
   },
   "dependencies": {
     "antd": "^4.5.4",

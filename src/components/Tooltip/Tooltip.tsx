@@ -3,6 +3,8 @@ import './style.less'
 
 const distance = 6
 
+export type placementType = 'top' | 'left' | 'right' | 'bottom';
+
 export interface TooltipProps {
     /**
      * 标题
@@ -11,12 +13,12 @@ export interface TooltipProps {
     /**
      * 鼠标移出后延时多少才隐藏 Tooltip，单位：ms
      */
-    mouseLeaveDelay: number;
+    mouseLeaveDelay?: number;
     /**
      * 气泡框位置
      * @default top
      */
-    placement: 'top' | 'left' | 'right' | 'bottom';
+    placement?: placementType;
 }
 
 const top = (visible: boolean) => {
@@ -95,8 +97,8 @@ const ToolTip: FC<TooltipProps> = ({title,placement, mouseLeaveDelay, children})
             className={'tooltip-title' + `${visible ? ' tooltip-show' : ''}`}
             style={(typeof tooltipTitleStyle[placement] === 'function' && tooltipTitleStyle[placement](visible)) || tooltipTitleStyle['top'](visible)}
         >
-      {title}
-    </span>
+            {title}
+        </span>
     </div>)
 }
 

@@ -1,89 +1,193 @@
-import React, {Component} from 'react';
-import CSS from 'csstype'
+import React, {FC, useEffect, useRef, useState} from "react";
+import Iconfont from '../Iconfont'
 import './style.less'
-export interface PropsType {
-    style?: object;
-    className?: string;
+
+interface ListViewProps {
     /**
-     * 加载完成文本
+     * 传入的Promise，一般为获取接口列表函数，promise返回list
      */
-    loadedText?: string;
+    API: Function;
     /**
-     * 是否加载完成
+     * 获取列表数据
      */
-    isLoaded?: boolean;
+    getList: Function;
     /**
-     * 加载完成文本
+     * API函数附加参数
      */
-    loadingText?: string;
+    extraParams?: Object;
     /**
-     * 加载中dom
+     * 刷新事件，返回第一页列表数据
      */
-    loadingEle?: any;
+    refreshList?: Function;
     /**
-     * 调用onLoad之前的临界值，单位是像素
-     * @default 10
+     * 滚动加载阀值
      */
     onEndReachedThreshold?: number;
     /**
-     * 滚动到一定阀值时触发, currentPage: 当前页码； 函数返回一个Promise
+     * 下拉刷新阀值
      */
-    onLoad?: (currentPage?: number) => Promise<boolean>;
+    threshold: number;
+    /**
+     * 最大下拉值
+     */
+    refreshNum?: number;
+    /**
+     * 展示下拉加载文本阀值
+     */
+    showRefreshTextThreshold?: number;
+    /**
+     * 是否需要刷新
+     */
+    isRefresh?: boolean;
+    /**
+     * 分页字段
+     */
+    limitKey: string;
+    /**
+     * 页码字段
+     */
+    currentKey: string;
 }
 
-class ListView extends Component<PropsType, {completed: boolean}> {
-    static defaultProps = {
-        onEndReachedThreshold: 10,
-        loadedText: '没有更多了',
-        loadingText: '加载中...'
+const ListView:FC<ListViewProps> = (
+    {
+        API = () => new Promise(resolve => resolve()),
+        extraParams = {},
+        getList = () => {},
+        refreshList = () => {},
+        onEndReachedThreshold = 20,
+        threshold = 50,
+        refreshNum = 200,
+        showRefreshTextThreshold = 24,
+        isRefresh = true,
+        currentKey = 'current',
+        limitKey = 'limit',
+        children
+    }) => {
+    const listRef = useRef(null)
+    const touchStartPageY = useRef(0)
+    const filter = useRef({
+        [currentKey]: 1,
+        [limitKey]: 20
+    })
+    const [state, setState] = useState({
+        isEnd: false,
+        loading: false,
+        finish: true,
+        distance: 0
+    })
+
+    useEffect(() =>  {
+        refresh()
+    }, [])
+
+    const onTouchStart = e => {
+        document.body.style.overflow = 'hidden'
+        touchStartPageY.current = e.touches[0].pageY
+        listRef.current.addEventListener('touchmove', onTouchMove, false)
     }
-    constructor(props: PropsType, context) {
-        super(props, context);
-        this.state = {
-            completed:true
+
+    const onTouchMove = e => {
+        if (listRef.current.scrollTop === 0) {
+            const diffDistance = e.touches[0].pageY - touchStartPageY.current
+            if (diffDistance <= 0 || !isRefresh) return
+            const distance = diffDistance > refreshNum ? refreshNum : diffDistance
+            setState(prevState => ({...prevState, distance}))
+            listRef.current.style.transform = `translateY(${distance}px)`
         }
     }
-    currentPage: number = 1
 
-    onScroll = (e) => {
-        if (e.target.scrollHeight - e.target.scrollTop - e.target.clientHeight < 10 && this.state.completed) {
-            this.setState({completed: false})
-            if (typeof this.props.onLoad === 'function') {
-                this.props.onLoad(this.currentPage).then(res => {
-                    if (res) {
-                        this.setState({completed: true})
-                        this.currentPage++
-                    }
-                })
+    const onTouchEnd = e => {
+        const pageY = e.changedTouches[0].pageY
+        if (pageY - touchStartPageY.current === 0) return
+        document.body.style.overflow = ''
+        let distance = state.distance
+        let complete = distance < threshold
+        const scrollToTop = async () => {
+            distance = distance - 10
+            listRef.current.style.transform = `translateY(${distance}px)`
+            if (distance > 0) {
+                if (distance < threshold && !complete) {
+                    setState(prevState => ({...prevState, distance, loading: true, isEnd: false}))
+                    await refresh()
+                    setState(prevState => ({...prevState, loading: false}))
+                    complete = true
+                }
+                window.requestAnimationFrame(scrollToTop)
+            } else {
+                listRef.current.style.transform = 'translateY(0px)'
+                setState({...state, distance: 0})
             }
         }
+        window.requestAnimationFrame(scrollToTop)
     }
-    render() {
-        return (
-            <div
-                style={this.props.style}
-                className={this.props.className + ' list-view'}
-                onScroll={this.onScroll}
-            >
-                {this.props.children}
-                {
-                    !this.props.isLoaded ?
-                        this.props.loadingEle ? this.props.loadingEle
-                            : !this.state.completed  && <div className='list-view-loading'>
-                                <div className='list-view-loading-icon' />
+
+
+    const refresh = () => {
+        filter.current[currentKey] = 1
+        return new Promise(async (resolve, reject) => {
+            try {
+                const list = await API({...filter.current, ...extraParams})
+                refreshList(list)
+                resolve({...state, loading: false})
+            } catch (e) {
+                reject(e)
+            }
+        })
+    }
+    const onLoad = async e => {
+        const distance = e.target.scrollHeight - e.target.clientHeight - e.target.scrollTop
+        if (distance < onEndReachedThreshold && state.finish && !state.isEnd) {
+            filter.current[currentKey]++
+            setState({...state,finish: false})
+            const list = (await API({...filter.current, ...extraParams}))
+            getList(list)
+            setState({...state,finish: true, isEnd: list && list.length === 0})
+        }
+    }
+    const {distance, finish, isEnd, loading} = state
+    return (<React.Fragment>
+        <div
+            className='scroll-loading'
+        >
+            {
+                distance > showRefreshTextThreshold ? <div
+                    className={'scroll-loading-refresh'}
+                >
+                    {
+                        loading ? <Iconfont type='iconloading1' className='program-refresh-loading' /> : <Iconfont
+                            type='iconxiala'
+                            style={
                                 {
-                                    this.props.loadingText
+                                    transform: distance < threshold ? '' : 'rotate(-180deg)',
+                                    transition: 'all .2s',
+                                    marginRight: 4
                                 }
-                            </div>
-                        : <div className='list-view-loading'>
-                            {
-                                this.props.loadedText
                             }
-                        </div>
+                        />
+                    }
+                    {distance <= threshold ? loading ? '正在刷新' : '下拉刷新' : '释放刷新'}
+                </div> : ''
+            }
+            <div
+                className='scroll-loading-list'
+                onScroll={onLoad}
+                ref={listRef}
+                onTouchStart={onTouchStart}
+                onTouchMove={onTouchMove}
+                onTouchEnd={onTouchEnd}
+            >
+                {
+                    React.Children.only(children) ? children : null
                 }
+                <div className={'scroll-loading-list-loading'}>
+                    {
+                        !finish ? '加载中...' : !isEnd ? '' : '没有更多了'
+                    }
+                </div>
             </div>
-        );
-    }
+        </div>
+    </React.Fragment>)
 }
 
-export default ListView;
+export default ListView

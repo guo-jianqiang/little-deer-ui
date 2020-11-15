@@ -15,7 +15,7 @@ export interface IconProps {
 const defaultProps: IconProps = {
     type: '',
     title: '',
-    scriptUrl: '//at.alicdn.com/t/font_1618700_bvek2fnb62.js'
+    scriptUrl: '//at.alicdn.com/t/font_1870073_mogwj56i4if.js'
 }
 
 const Icon: React.SFC<IconProps> = ({type, title, scriptUrl, ...restProps}) => {
