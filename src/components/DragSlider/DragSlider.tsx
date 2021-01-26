@@ -85,7 +85,7 @@ const DragSlider: React.SFC<DragSliderProps> = ({title, children}) => {
         topRef.current = currentTop
         dragSliderRef.current.removeEventListener('touchmove', onTouchMove)
     }
-    const onScroll = (e: UIEvent) => {
+    const onScroll = () => {
         // e.stopPropagation()
         console.log(12)
     }

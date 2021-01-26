@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { createFromIconfontCN } from '@ant-design/icons';
 
 declare var require: any
@@ -9,13 +9,13 @@ export interface IconProps {
     scriptUrl?: any;
     className?: string;
     style?: React.CSSProperties;
-    onClick?: (e: React.MouseEvent<HTMLElement>) => void;
+    onClick?: (e: React.MouseEvent<any>) => void;
 }
 
 const defaultProps: IconProps = {
     type: '',
     title: '',
-    scriptUrl: '//at.alicdn.com/t/font_1870073_mogwj56i4if.js'
+    scriptUrl: require('./font')
 }
 
 const Icon: React.SFC<IconProps> = ({type, title, scriptUrl, ...restProps}) => {

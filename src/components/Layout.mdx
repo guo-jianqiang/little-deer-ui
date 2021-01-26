@@ -1,0 +1,62 @@
+---
+name: Button
+menu: Components
+---
+
+import { Playground, Props } from 'docz'
+import {createHashHistory} from 'history'
+import avatar from '../assets/images/logo.svg'
+import Layout from './Layout/index.ts'
+
+# Layout
+
+## Properties
+
+<Props of={Layout} />
+
+## Basic usage
+
+<Playground>
+  {
+    () => {
+      const routeItems = [
+        {
+          path: '/home',
+          exact: true,
+          meta: {
+            tabFixed: true,
+            isCache: true,
+            icon: 'iconuser',
+            name: '首页',
+          },
+          component: () => <div>home</div>,
+        },
+        {
+          path: '/test',
+          exact: true,
+          meta: {
+            isCache: true,
+            icon: 'iconuser',
+            name: '测试页',
+          },
+          component: () => <div>test</div>,
+        },
+      ]
+      return (
+        <div className='storybook__container'>
+          <Layout
+            proName='admin-demo'
+            // aliveControl={aliveControl}
+            routeItems={routeItems}
+            history={createHashHistory()}
+            username={'测试'}
+            onClickDrop={() => {console.log('退出')}}
+          >
+            <div>layout</div>
+          </Layout>
+        </div>
+      )
+    }
+  }
+</Playground>
+

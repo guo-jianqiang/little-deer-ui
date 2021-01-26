@@ -1,61 +1,68 @@
 const gulp = require('gulp');
 const clean = require('gulp-clean');
+const sourcemaps = require('gulp-sourcemaps')
 const ts = require('gulp-typescript')
 const through2 = require('through2')
 const autoprefixer = require('gulp-autoprefixer')
 const less = require('gulp-less')
-const cssnano = require('gulp-cssnano')
 
 const babelOpts = {
-  presets: ['@babel/env', '@babel/preset-typescript', '@babel/react'],
-  plugins: ['@babel/plugin-transform-runtime','@babel/proposal-class-properties'],
-  env: {
-    esm: {
-      presets: [
-        [
-          '@babel/env',
-          {
-            modules: false,
-          },
-        ],
-      ],
-      plugins: [
-        '@babel/plugin-proposal-export-default-from',
-        [
-          '@babel/plugin-transform-runtime',
-          {
-            useESModules: true,
-          },
-        ],
-      ],
-    },
-  },
+  presets: ["@babel/preset-env", "@babel/preset-react", ["@babel/preset-typescript", { allowDeclareFields: true }]],
+  plugins: [
+    '@babel/plugin-transform-spread',
+    ['@babel/plugin-transform-runtime'],
+    '@babel/plugin-proposal-export-default-from',
+    [
+      "import",
+      {
+        "libraryName": "antd",
+        "libraryDirectory": "lib",
+        "style": true
+      }
+    ]]
 }
 
 const paths = {
   dest: {
     dist: 'dist/lib',
   },
+  icon: 'src/components/Iconfont/font.js',
   styles: 'src/components/**/*.less', // 样式文件路径 - 暂时不关心
-  scripts: ['src/components/**/*.{ts,tsx}'], // 脚本文件路径
+  typings: 'src/@types/**/*.d.ts',
+  components: 'src/components/**/*.{ts,tsx}', // 组件
+  helpers: 'src/lib/helpers.ts', // 辅助函数
+  localStorage: 'src/lib/localStorage.ts' // 缓存操作
 };
 
+function copyIconfont () {
+  const {dest, icon} = paths
+  return gulp.src(icon)
+    .pipe(gulp.dest(dest.dist + '/Iconfont'))
+}
+
 function typescript () {
-  const {dest, scripts} = paths
-  return gulp.src(scripts)
-    .pipe(ts.createProject('tsconfig.json')())
+  const {dest, typings,  components, helpers, localStorage} = paths
+  return gulp.src([typings, components, helpers, localStorage])
+    .pipe(sourcemaps.init())
+    .pipe(ts.createProject("tsconfig.json")())
+    // .js
+    // .pipe(babel(babelOpts))
     .pipe(through2.obj(function z (file, encoding, next) {
       this.push(file.clone());
       file.contents = Buffer.from(file.contents.toString().replace(/\.less/g, '.css'));
+      file.contents = Buffer.from(file.contents.toString().replace(/\.\/components/g, './lib'))
       this.push(file);
       next()
     }))
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(dest.dist));
 }
 
 
 function compileIndex () {
-  return gulp.src('src/index.ts')
+  const {typings} = paths
+  return gulp.src([typings, 'src/index.ts'])
+    // .pipe(babel(babelOpts))
     .pipe(ts.createProject('tsconfig.json')())
     .pipe(through2.obj(function z (file, encoding, next) {
       this.push(file.clone())
@@ -80,7 +87,7 @@ function cleanDist () {
     .pipe(clean())
 }
 
-const build = gulp.series(cleanDist, typescript, compileIndex, less2css);
+const build = gulp.series(cleanDist, typescript, copyIconfont, compileIndex, less2css);
 
 exports.build = build;
 

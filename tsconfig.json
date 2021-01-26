@@ -1,14 +1,25 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "lib": ["dom", "es6", "es5", "es2016.array.include", "es2015.promise", "es2017.object"],
-    "target": "es5",
-    "sourceMap": true,
-    "jsx": "react",
-    "typeRoots" : ["./typings"],
+    "rootDir": "src",
     "declaration": true,
+    "declarationDir": "./dist",
+    "removeComments": true,
+    "allowJs": true,
+    "jsx": "react",
+    "lib": ["es6", "dom"],
+    "types": ["node"],
+    "typeRoots": ["./node_modules/@types", "./src/@types"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
     "esModuleInterop": true,
-    "noEmitHelpers": true,
-    "importHelpers": true
-  }
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "outDir": "./dist",
+    "strict": true,
+    "target": "es5",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src", "src/@types"],
+  "exclude": ["node_modules"]
 }
