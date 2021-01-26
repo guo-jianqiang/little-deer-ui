@@ -4,7 +4,7 @@ import {Breadcrumb as AntdBreadcrumb} from 'antd'
 import 'antd/lib/breadcrumb/style'
 import {History} from 'history'
 import {getTreePath} from '../../../../lib/helpers'
-import {RouteItem} from '../../LayoutInterface'
+import {RouteItem} from '../../Layout'
 
 export interface BreadcrumbProps {
   routes: Array<RouteItem>;

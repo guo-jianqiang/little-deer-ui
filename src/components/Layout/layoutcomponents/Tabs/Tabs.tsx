@@ -5,7 +5,7 @@ import {History} from 'history'
 import {Menu, Dropdown, Tooltip} from 'antd'
 import cx from 'classnames'
 import {CloseCircleOutlined, LeftOutlined, RightOutlined} from '@ant-design/icons'
-import {RouteItem, aliveControlInterface} from '../../LayoutInterface'
+import {RouteItem, aliveControlInterface} from '../../Layout'
 import {treeForeach, isEmpty} from '../../../../lib/helpers'
 import {getItem, removeItem, setItem} from '../../../../lib/localStorage'
 import {MenuInfo} from 'rc-menu/lib/interface'
@@ -213,9 +213,9 @@ const Tabs: TabsType = ({history, routeItems, scrollDistance = 200, aliveControl
               })}
               onClick={handleClickTab(tab)}>
               <span className={'tabs-wrapper-item-name text-ellipsis-1'}>{tab.meta.name}</span>
-              {!tab.meta.tabFixed && (
-                <CloseCircleOutlined className="tabs-wrapper-item-close" onClick={handleClickCloseTab(tab)} />
-              )}
+              {/*{!tab.meta.tabFixed && (*/}
+              {/*  <CloseCircleOutlined className="tabs-wrapper-item-close" onClick={handleClickCloseTab(tab)} />*/}
+              {/*)}*/}
             </span>
           </Dropdown>
         ))}

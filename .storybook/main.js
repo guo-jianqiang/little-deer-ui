@@ -5,7 +5,7 @@ module.exports = {
   ],
   "addons": [
     "@storybook/addon-links",
-    "@storybook/addon-essentials"
+    "@storybook/addon-essentials",
   ],
   webpackFinal: async (config, { configType }) => {
     // `configType` has a value of 'DEVELOPMENT' or 'PRODUCTION'
@@ -14,23 +14,23 @@ module.exports = {
 
     // Make whatever fine-grained changes you need
     config.module.rules.push(
-      // {
-      //   test: /\.(ts|tsx)$/,
-      //   loader: require.resolve("babel-loader"),
-      //   options: {
-      //     presets: [["react-app", { flow: false, typescript: true }]],
-      //     plugins: [
-      //       [
-      //         "import",
-      //         {
-      //           libraryName: "antd",
-      //           libraryDirectory: "es",
-      //           style: true
-      //         }
-      //       ]
-      //     ]
-      //   }
-      // },
+      {
+        test: /\.(ts|tsx)$/,
+        loader: require.resolve("babel-loader"),
+        options: {
+          presets: [["react-app", { flow: false, typescript: true }]],
+          plugins: [
+            [
+              "import",
+              {
+                libraryName: "antd",
+                libraryDirectory: "es",
+                style: true
+              }
+            ]
+          ]
+        }
+      },
       {
         test: /\.less$/,
         exclude: /node_modules/,

@@ -2,14 +2,12 @@
 
 # little-deer-ui
 
-typescript+react
-
-基于[docz](https://www.docz.site/)编写的组件介绍文，组件打包使用[gulp](https://gulpjs.com/)
-
 ## 使用
 
 ```sh
 npm install little-deer-ui
+or
+yarn add little-deer-ui
 ```
 
 ## 按需加载组件配置
@@ -41,7 +39,7 @@ module.exports = function override(config, env) {
 };
 ```
 
-#### 使用 babel-plugin-import
+### 使用 babel-plugin-import
 
 ```shell
  yarn add babel-plugin-import
@@ -62,12 +60,125 @@ module.exports = function override(config, env) {
 +   },'little-deer-ui'),
 + );
 ```
-引入使用
-```jsx
-import {Button} from 'little-deer-ui'
+### 引入Layout使用
 
-const App = () => (<Button>>按钮</Button>)
+安装history
+
+```shell
+npm add history@4.10.0
+or 
+yarn add history@4.10.0
+```
+```jsx
+import {Layout} from 'little-deer-ui'
+import {createHashHistory} from 'history'
+const routeItems = [
+  {
+    path: '/home',
+    exact: true,
+    meta: {
+      tabFixed: true,
+      isCache: true,
+      icon: () => <Icon type='iconuser' />,
+      name: '首页',
+    },
+    component: () => <div>home</div>,
+  },
+  {
+    path: '/test',
+    exact: true,
+    meta: {
+      isCache: true,
+      icon: 'iconuser',
+      name: '测试页',
+    },
+    component: () => <div>test</div>,
+  },
+]
+const App = () => (
+  <Layout
+    proName={'admin'}
+    routeItems={routeItems}
+    history={createHashHistory()}
+    username={'测试'}
+    onClickDrop={() => {console.log('23')}}
+  >
+    {renderRoutes()}
+  </Layout>
+)
+```
+```less
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+#root {
+	height: 100%;
+}
+```
+![layout](./docs/layout.png)
+### layout路由缓存
+```shell
+yarn add react-router-cache-route
+or
+npm install react-router-cache-route
+```
+```tsx
+import {CacheRoute, CacheSwitch, refreshByCacheKey, dropByCacheKey} from 'react-router-cache-route'
+
+const aliveControl = {
+   dropByCacheKey,
+   refreshByCacheKey
+}
+
+const Routes = () => {
+  const renderRoutes = () => {
+    let routes = []
+    const routeMap = (arr) => {
+      arr.forEach(route => {
+        if (!route.meta.hidden) {
+          routes.push(
+            <CacheRoute  // 替换Route => CacheRoute
+              when={() => !!route.meta.isCache} // 是否缓存
+              cacheKey={route.path} // 缓存key
+              key={route.path}
+              exact={route.exact}
+              path={route.path}
+              component={route.component}
+            />,
+          )
+        }
+        if (route.routes && route.routes.length) routeMap(route.routes)
+      })
+    }
+    routeMap(routeItems)
+    return routes
+  }
+  return (
+    <Router history={myHistory}>
+      <CacheSwitch aliveControl={aliveControl}> // 替换 Switch => CacheSwitch, 添加aliveControl
+        ...
+      </CacheSwitch>
+    </Router>
+  )
+}
 ```
 
-[线上地址](https://g_guojq.gitee.io/little-deer-ui)
+### 刷新清除刷新
+如使用路由缓存功能，tab即开启刷新功能。
+![](./docs/route-cache.gif)
+
+### 清除tab记录浏览器缓存
+```ts
+import {Layout} from 'little-deer-ui'
+const clearTabs = () => {
+  Layout.Tabs.clearTabsCache()
+}
+```
+
+[组件库预览地址](https://g_guojq.gitee.io/little-deer-ui)
+[实战项目源码地址](https://gitee.com/g_guojq/react-antd-admin)
+
+
 

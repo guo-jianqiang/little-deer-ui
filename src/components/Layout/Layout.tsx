@@ -31,7 +31,7 @@ export interface RouteItem {
     isCache?: boolean;
     hidden?: boolean;
     name: string;
-    icon: Function | string;
+    icon: React.FunctionComponent | string;
   };
   component: ComponentType;
   routes?: Array<RouteItem>;
