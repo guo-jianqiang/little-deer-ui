@@ -24,6 +24,43 @@ const routeItems = [
       name: '首页',
     },
     component: () => <div>home</div>,
+    routes: [
+      {
+        path: '/home/1',
+        exact: true,
+        meta: {
+          tabFixed: true,
+          isCache: true,
+          icon: () => <Icon type='iconuser' />,
+          name: '首页1',
+        },
+        component: () => <div>1</div>,
+      },
+      {
+        path: '/home/inner',
+        exact: true,
+        meta: {
+          tabFixed: true,
+          isCache: true,
+          icon: () => <Icon type='iconuser' />,
+          name: '首页2',
+        },
+        component: () => <div>2</div>,
+        routes: [
+          {
+            path: '/home/inner/1',
+            exact: true,
+            meta: {
+              tabFixed: true,
+              isCache: true,
+              icon: () => <Icon type='iconuser' />,
+              name: '首页1',
+            },
+            component: () => <div>inner</div>,
+          }
+        ]
+      }
+    ]
   },
   {
     path: '/test',

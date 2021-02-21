@@ -33,6 +33,7 @@ const Menu: FC<MenuProps> = props => {
   const renderMenuItem = (routes: Array<RouteItem> = []) =>
     routes?.map(route => {
       if (route.routes && route.routes.length) return renderSubMenu(route)
+      if (route.meta.hidden) return null
       return (
         <Item key={route.path} title={route.meta.name} icon={renderIcon(route)}>
           {route.meta.name}

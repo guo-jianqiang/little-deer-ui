@@ -178,7 +178,7 @@ const clearTabs = () => {
 ```
 
 [组件库预览地址](https://g_guojq.gitee.io/little-deer-ui)
-[实战项目源码地址](https://gitee.com/g_guojq/react-antd-admin)
+[实战项目源码地址](https://github.com/guo-jianqiang/react-antd-admin)
 
 
 
