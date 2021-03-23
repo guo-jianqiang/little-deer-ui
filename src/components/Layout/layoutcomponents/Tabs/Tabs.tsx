@@ -190,7 +190,12 @@ const Tabs: TabsType = ({ draggableTab = true, history, routeItems, scrollDistan
   }
 
   const handleDragEnter = (tab: RouteItem) => () => {
+    if (dragTab.current?.path === tab.path) return
     setDragEnterTab(tab)
+  }
+
+  const handleDragEnd = () => {
+    setDragEnterTab(null)
   }
 
   const handleDrop = (tab: RouteItem, i: number) => () => {
@@ -200,7 +205,6 @@ const Tabs: TabsType = ({ draggableTab = true, history, routeItems, scrollDistan
       if (dragTab.current) prevValue[i] = { ...dragTab.current }
       return [...prevValue]
     })
-    setDragEnterTab(null)
   }
 
   const tabMenu = (tab: RouteItem, i: number) => (
@@ -234,6 +238,7 @@ const Tabs: TabsType = ({ draggableTab = true, history, routeItems, scrollDistan
               onDrop={handleDrop(tab, i)}
               onDragStart={handleDragStart(tab)}
               onDragEnter={handleDragEnter(tab)}
+              onDragEnd={handleDragEnd}
               onDragOver={e => e.preventDefault()}
               id={tab.path}
               className={cx('tabs-wrapper-item', {
