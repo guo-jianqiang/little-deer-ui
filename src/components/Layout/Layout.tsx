@@ -1,27 +1,27 @@
 /** @format */
-import React, {useRef, useReducer} from 'react'
+import React, { useRef, useReducer } from 'react'
 import cx from 'classnames'
 import Header from './layoutcomponents/Header/Header'
 import Breadcrumb from './layoutcomponents/Breadcrumb/Breadcrumb'
 import Menu from './layoutcomponents/Menu/Menu'
 import Icon from '../Iconfont'
-import {Tooltip, BackTop} from 'antd'
+import { Tooltip, BackTop } from 'antd'
 import 'antd/lib/tooltip/style'
 import 'antd/lib/back-top/style'
-import {logoImg as defaultLogo} from './constant/index'
+import { logoImg as defaultLogo } from './constant/index'
 import Tabs from './layoutcomponents/Tabs/Tabs'
-import {configurationReducer} from './store/configurationReducer'
-import ConfigurationContext, {getSystemConfig} from './store/configurationContext'
-import {actionCollapsed} from './store/configurationAction'
+import { configurationReducer } from './store/configurationReducer'
+import ConfigurationContext, { getSystemConfig } from './store/configurationContext'
+import { actionCollapsed } from './store/configurationAction'
 import './style.less'
-import {getFirstRoute} from "../../lib/helpers";
-import {History} from "history";
+import { getFirstRoute } from "../../lib/helpers";
+import { History } from "history";
 
 export interface LayoutStyle extends React.CSSProperties {
   '--layout-menu-width': string;
 }
 
-type ComponentType = React.ComponentType<any> & {name: string}
+type ComponentType = React.ComponentType<any> & { name: string }
 
 export interface RouteItem {
   path: string;
@@ -61,6 +61,10 @@ export interface LayoutProps {
    */
   showTabs?: boolean;
   /**
+   * 是否开启tab拖拽
+   */
+  draggableTab?: boolean;
+  /**
    * aliveControl 路由缓存函数，若要使用请安装[react-router-cache-route](https://github.com/CJY0208/react-router-cache-route)
    * 并将dropByCacheKey、refreshByCacheKey方法放入该对象导入，导入改对象后默认开启路由缓存功能
    */
@@ -94,15 +98,29 @@ export type LayoutInnerComponent = {
   Breadcrumb: typeof Breadcrumb;
 }
 
-const Layout: React.FC<LayoutProps> & LayoutInnerComponent = ({routeItems, history, username = '', loginPath, showTabs = true, aliveControl, onClickDrop, logo, avatar, proName, children}) => {
+const Layout: React.FC<LayoutProps> & LayoutInnerComponent = (
+  {
+    routeItems,
+    history,
+    username = '',
+    loginPath,
+    showTabs = true,
+    draggableTab = true,
+    aliveControl,
+    onClickDrop,
+    logo,
+    avatar,
+    proName,
+    children
+  }) => {
   const [configState, dispatch] = useReducer(configurationReducer, getSystemConfig())
   const contentRef = useRef<HTMLDivElement | null>(null)
   const layoutRef = useRef<HTMLDivElement | null>(null)
   const handleClickCollapse = () => {
-    dispatch(actionCollapsed({...configState, collapsed: !configState.collapsed}))
+    dispatch(actionCollapsed({ ...configState, collapsed: !configState.collapsed }))
   }
   const handleClickMask = () => {
-    dispatch(actionCollapsed({...configState, collapsed: true}))
+    dispatch(actionCollapsed({ ...configState, collapsed: true }))
   }
   const handleClickGoHome = () => {
     const homeRoute = getFirstRoute(routeItems)
@@ -111,7 +129,7 @@ const Layout: React.FC<LayoutProps> & LayoutInnerComponent = ({routeItems, histo
   const handleClickDrop = () => {
     onClickDrop && onClickDrop()
   }
-  const {collapsed} = configState
+  const { collapsed } = configState
   const collapseBtn = (
     <Tooltip title={collapsed ? '展开' : '收起'}>
       <Icon
@@ -121,7 +139,7 @@ const Layout: React.FC<LayoutProps> & LayoutInnerComponent = ({routeItems, histo
       />
     </Tooltip>
   )
-  const layoutStyle: LayoutStyle = {'--layout-menu-width': collapsed ? '56px' : '220px'}
+  const layoutStyle: LayoutStyle = { '--layout-menu-width': collapsed ? '56px' : '220px' }
   return (
     <ConfigurationContext.Provider
       value={{
@@ -162,7 +180,7 @@ const Layout: React.FC<LayoutProps> & LayoutInnerComponent = ({routeItems, histo
             onClickDrop={handleClickDrop}
             breadcrumb={<Breadcrumb routes={routeItems} history={history} />}
           />
-          {showTabs && <Tabs history={history} routeItems={routeItems} aliveControl={aliveControl} />}
+          {showTabs && <Tabs draggableTab={draggableTab} history={history} routeItems={routeItems} aliveControl={aliveControl} />}
           <div
             className={'layout-right-content'}
             style={{
@@ -172,7 +190,7 @@ const Layout: React.FC<LayoutProps> & LayoutInnerComponent = ({routeItems, histo
           >
             {children}
             <BackTop
-              style={{right: 32, bottom: 32}}
+              style={{ right: 32, bottom: 32 }}
               target={() => contentRef.current || window}
               visibilityHeight={200}
             />

@@ -1,14 +1,14 @@
 /** @format */
 
-import React, {FC, useEffect, useRef, useState} from 'react'
-import {History} from 'history'
-import {Menu, Dropdown, Tooltip} from 'antd'
+import React, { FC, useEffect, useRef, useState } from 'react'
+import { History } from 'history'
+import { Menu, Dropdown, Tooltip } from 'antd'
 import cx from 'classnames'
-import {CloseCircleOutlined, LeftOutlined, RightOutlined} from '@ant-design/icons'
-import {RouteItem, aliveControlInterface} from '../../Layout'
-import {treeForeach, isEmpty} from '../../../../lib/helpers'
-import {getItem, removeItem, setItem} from '../../../../lib/localStorage'
-import {MenuInfo} from 'rc-menu/lib/interface'
+import { CloseCircleOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons'
+import { RouteItem, aliveControlInterface } from '../../Layout'
+import { treeForeach, isEmpty } from '../../../../lib/helpers'
+import { getItem, removeItem, setItem } from '../../../../lib/localStorage'
+import { MenuInfo } from 'rc-menu/lib/interface'
 import 'antd/lib/tooltip/style'
 import 'antd/lib/menu/style'
 import 'antd/lib/dropdown/style'
@@ -26,6 +26,7 @@ const TAB_ACTIONS = {
 }
 
 export interface TabsProps<T> {
+  draggableTab?: boolean;
   scrollDistance?: number;
   aliveControl?: aliveControlInterface;
   history: History;
@@ -38,10 +39,12 @@ type TabsStaticFun = {
 
 export type TabsType = FC<TabsProps<RouteItem>> & TabsStaticFun
 
-const Tabs: TabsType = ({history, routeItems, scrollDistance = 200, aliveControl}) => {
+const Tabs: TabsType = ({ draggableTab = true, history, routeItems, scrollDistance = 200, aliveControl }) => {
   const localTabs = !isEmpty(getItem(LAYOUT_TAB)) ? getItem(LAYOUT_TAB) : []
   const [tabs, setTabs] = useState<Array<RouteItem>>(localTabs)
+  const [dragEnterTab, setDragEnterTab] = useState<RouteItem | null>()
   const prevTabs = useRef<Array<RouteItem>>(tabs)
+  const dragTab = useRef<RouteItem>()
   const routeRef = useRef<RouteItem | null>(null)
   const tabAction = useRef<string>(TAB_ACTIONS.ADD)
   useEffect(() => {
@@ -180,10 +183,30 @@ const Tabs: TabsType = ({history, routeItems, scrollDistance = 200, aliveControl
     }
   }
 
+  // ================== 拖拽 =======================
+
+  const handleDragStart = (tab: RouteItem) => () => {
+    dragTab.current = tab
+  }
+
+  const handleDragEnter = (tab: RouteItem) => () => {
+    setDragEnterTab(tab)
+  }
+
+  const handleDrop = (tab: RouteItem, i: number) => () => {
+    const index = tabs.findIndex(item => item.path === dragTab.current?.path)
+    setTabs(prevValue => {
+      prevValue[index] = { ...tab }
+      if (dragTab.current) prevValue[i] = { ...dragTab.current }
+      return [...prevValue]
+    })
+    setDragEnterTab(null)
+  }
+
   const tabMenu = (tab: RouteItem, i: number) => (
     <Menu onClick={HandleClickTabMenu(tab, i)}>
       {
-        aliveControl && !isEmpty(aliveControl) &&  <Menu.Item key={TAB_ACTIONS.REFRESH} disabled={!tab.meta.isCache}>
+        aliveControl && !isEmpty(aliveControl) && <Menu.Item key={TAB_ACTIONS.REFRESH} disabled={!tab.meta.isCache}>
           刷新
         </Menu.Item>
       }
@@ -207,15 +230,21 @@ const Tabs: TabsType = ({history, routeItems, scrollDistance = 200, aliveControl
         {tabs.map((tab, i) => (
           <Dropdown overlay={tabMenu(tab, i)} trigger={['contextMenu']} key={tab.path}>
             <span
+              draggable={draggableTab}
+              onDrop={handleDrop(tab, i)}
+              onDragStart={handleDragStart(tab)}
+              onDragEnter={handleDragEnter(tab)}
+              onDragOver={e => e.preventDefault()}
               id={tab.path}
               className={cx('tabs-wrapper-item', {
                 'tabs-wrapper-active': tab.path === history.location.pathname,
+                'tabs-wrapper-dragEnter': dragEnterTab?.path === tab.path
               })}
               onClick={handleClickTab(tab)}>
               <span className={'tabs-wrapper-item-name text-ellipsis-1'}>{tab.meta.name}</span>
-              {/*{!tab.meta.tabFixed && (*/}
-              {/*  <CloseCircleOutlined className="tabs-wrapper-item-close" onClick={handleClickCloseTab(tab)} />*/}
-              {/*)}*/}
+              {!tab.meta.tabFixed && (
+                <CloseCircleOutlined className="tabs-wrapper-item-close" onClick={handleClickCloseTab(tab)} />
+              )}
             </span>
           </Dropdown>
         ))}

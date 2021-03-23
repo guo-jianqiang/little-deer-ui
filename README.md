@@ -169,6 +169,8 @@ const Routes = () => {
 如使用路由缓存功能，tab即开启刷新功能。
 ![](./docs/route-cache.gif)
 
+### layout tab支持拖拽
+
 ### 清除tab记录浏览器缓存
 ```ts
 import {Layout} from 'little-deer-ui'
