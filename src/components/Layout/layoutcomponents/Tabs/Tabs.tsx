@@ -242,9 +242,9 @@ const Tabs: TabsType = ({ draggableTab = true, history, routeItems, scrollDistan
               })}
               onClick={handleClickTab(tab)}>
               <span className={'tabs-wrapper-item-name text-ellipsis-1'}>{tab.meta.name}</span>
-              {!tab.meta.tabFixed && (
+              {/* {!tab.meta.tabFixed && (
                 <CloseCircleOutlined className="tabs-wrapper-item-close" onClick={handleClickCloseTab(tab)} />
-              )}
+              )} */}
             </span>
           </Dropdown>
         ))}
