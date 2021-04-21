@@ -49,7 +49,7 @@ const Tabs: TabsType = ({ draggableTab = true, history, routeItems, scrollDistan
   const tabAction = useRef<string>(TAB_ACTIONS.ADD)
   useEffect(() => {
     treeForeach(routeItems, route => {
-      if (route.path === history.location.pathname) {
+      if (route.path === history.location.pathname && !route.hiddenTab) {
         addTab(route)
       }
     })
@@ -59,7 +59,7 @@ const Tabs: TabsType = ({ draggableTab = true, history, routeItems, scrollDistan
     setItem(LAYOUT_TAB, tabs)
     scrollIntoTab()
     if (routeRef.current && tabAction.current !== TAB_ACTIONS.ADD) {
-      if (routeRef.current?.path !== history.location.pathname) history.push(routeRef.current?.path)
+      if (routeRef.current?.path !== history.location.pathname) history.push({pathname: routeRef.current?.path})
       if (aliveControl && !isEmpty(aliveControl) && aliveControl.dropByCacheKey) {
         prevTabs.current.forEach(prevTab => {
           if (!tabs.find(tab => tab.path === prevTab.path)) {
@@ -83,7 +83,7 @@ const Tabs: TabsType = ({ draggableTab = true, history, routeItems, scrollDistan
     routeRef.current = route
     if (tabs.find(tab => tab.path === route.path)) return
     setTabs((prevTabs: Array<RouteItem> = []) => {
-      prevTabs.push(route)
+      prevTabs.push({...route})
       if (routeRef.current) routeRef.current = route
       tabAction.current = TAB_ACTIONS.ADD
       return [...prevTabs]
@@ -142,7 +142,7 @@ const Tabs: TabsType = ({ draggableTab = true, history, routeItems, scrollDistan
   }
   const handleClickTab = (route: RouteItem) => (e: React.MouseEvent<HTMLSpanElement>) => {
     e.stopPropagation()
-    route.path !== history.location.pathname && history.push(route.path)
+    route.path !== history.location.pathname && history.push({pathname: route.path})
     if (routeRef.current) routeRef.current = route
   }
 

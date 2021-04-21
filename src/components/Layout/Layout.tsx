@@ -34,7 +34,9 @@ export interface RouteItem {
     icon: Function | string;
   };
   component: ComponentType;
+  hiddenTab?: boolean;
   routes?: Array<RouteItem>;
+  [key: string]: any;
 }
 
 export interface aliveControlInterface {
