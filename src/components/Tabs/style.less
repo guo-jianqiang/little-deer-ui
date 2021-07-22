@@ -1,0 +1,53 @@
+@lightColor: #376FFF;
+@normalColor: #323232;
+@tabsHeaderHeight: 20px;
+.tabs {
+  height: 100%;
+}
+
+.tabsHeader {
+  display: flex;
+  align-items: center;
+  padding-bottom: 12px;
+}
+
+.tabsHeaderTitle {
+  position: relative;
+  color: @normalColor;
+  font-size: 14px;
+  cursor: pointer;
+  &:hover{
+    color: @lightColor;
+  }
+  &:not(:first-child) {
+    margin-left: 64px;
+  }
+  &::after{
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    width: 20px;
+    height: 3px;
+    border-radius: 2px;
+    background-color: @lightColor;
+    transform: scaleX(0) translateX(-50%);
+    transform-origin: 50%;
+    transition: all 200ms ease-in-out;
+  }
+}
+
+.tabsActive {
+  color: @lightColor;
+  &::after {
+    transform: scaleX(1) translateX(-50%);
+  }
+}
+
+.tabsContent {
+  height: calc(100% - @tabsHeaderHeight);
+}
+
+.tabsPane {
+  padding: 8px;
+}
