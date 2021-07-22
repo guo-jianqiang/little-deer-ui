@@ -1,0 +1,38 @@
+default:
+  image: node:latest
+  before_script:
+    - npm install
+    - |
+      {
+        echo "@${CI_PROJECT_ROOT_NAMESPACE}:registry=${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/"
+        echo "${CI_API_V4_URL#https?}/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=\${CI_JOB_TOKEN}"
+      } | tee --append .npmrc
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .npm/
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH
+
+variables:
+  NPM_TOKEN: ${CI_JOB_TOKEN}
+
+stages:
+  - build
+  - release
+
+build:
+  stage: build
+  script:
+    - npm run dist
+  only:
+    - tags
+
+publish:
+  stage: release
+  script:
+    - npm publish
+  only:
+    - tags
